@@ -1,21 +1,26 @@
 <template>
     <l-marker :lat-lng="coords">
         <l-icon :icon-url="iconUrl" :icon-size="iconSize" />
+        <l-popup>
+            {{name}}
+      </l-popup>
     </l-marker>
 </template>
 <script>
 import {
-  LIcon,
-  LMarker,
+    LIcon,
+    LMarker,
+    LPopup,
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
 
 export default {
     components: {
         LIcon,
-        LMarker
+        LMarker,
+        LPopup,
     },
-    props: ['lat', 'long'],
+    props: ['lat', 'long', 'name'],
     data() {
         return {
         iconWidth: 25,

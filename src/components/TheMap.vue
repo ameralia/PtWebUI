@@ -9,7 +9,13 @@
       <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png">
       </l-tile-layer>
       <l-control-layers />
-      <stop-point v-for="point in stopPoints" :key="point.id" :lat = "point.lat" :long = "point.long"></stop-point>
+      <stop-point 
+        v-for="point in stopPoints" 
+        :key="point.id" 
+        :lat = "point.lat" 
+        :long = "point.long"
+        :name = "point.name"
+        ></stop-point>
     </l-map>
 </div>
 </template>
@@ -33,9 +39,9 @@ export default {
     return {
         zoom: 13,
         stopPoints: [
-            {id: 1, lat: 50.1148750, long: 8.6862347},
-            {id: 2, lat: 50.13, long: 8.681},
-            {id: 3, lat: 50.109, long: 8.592},
+            {id: 1, lat: 50.1148750, long: 8.6862347, name: 'Huegelstr'},
+            {id: 2, lat: 50.13, long: 8.681, name: 'Galluswarte'},
+            {id: 3, lat: 50.109, long: 8.592, name: 'Hauptwache'},
         ]
     };
   },
