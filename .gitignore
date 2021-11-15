@@ -1,0 +1,7 @@
+# Vcs
+.git
+
+# Work tools
+*.swp
+
+# Outputs
