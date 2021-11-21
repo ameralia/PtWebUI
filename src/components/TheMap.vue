@@ -1,21 +1,16 @@
 <template>
 <div style="height: 80vh; width: 80vw;">
 <l-map
-      v-model="zoom"
       :zoom="zoom"
-      :center="[50.1148750, 8.6862347]"
-      @move="log('move')"
+      :center="defaultCenterPos"
+      :bounds="bounds"
+      @update:bounds="updateBounds"
+      @update:zoom="updateZoom"
     >
-      <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png">
+      <l-tile-layer :url="url">
       </l-tile-layer>
       <l-control-layers />
-      <stop-point 
-        v-for="point in stopPoints" 
-        :key="point.id" 
-        :lat = "point.lat" 
-        :long = "point.long"
-        :name = "point.name"
-        ></stop-point>
+      <the-stops :stops="stops" />
     </l-map>
 </div>
 </template>
@@ -26,32 +21,47 @@ import {
   LControlLayers,
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
-import StopPoint from "./StopPoint.vue";
+import TheStops from "./TheStops.vue";
+import {lngToXTile} from "../GisMath";
+import {latToYTile} from "../GisMath";
+import {getStopsData} from "../provider";
+import config from "../config";
 
 export default {
   components: {
     LMap,
     LTileLayer,
     LControlLayers,
-    StopPoint
+    TheStops,
   },
   data() {
     return {
-        zoom: 13,
-        stopPoints: [
-            {id: 1, lat: 50.1148750, long: 8.6862347, name: 'Huegelstr'},
-            {id: 2, lat: 50.13, long: 8.681, name: 'Galluswarte'},
-            {id: 3, lat: 50.109, long: 8.592, name: 'Hauptwache'},
-        ]
+        zoom: config("defaultZoom"),
+        bounds: {},
+        stops: [],
+        url: config("tilesUrlPattern"),
+        defaultCenterPos: config("defaultCenterPos")
     };
   },
   methods: {
-    changeIcon() {
-      this.iconWidth += 2;
-      if (this.iconWidth > this.iconHeight) {
-        this.iconWidth = Math.floor(this.iconHeight / 2);
-      }
+    async updateBounds(bBox) {
+      const zoomStep = config('stopsDataZoomStep');
+      const northEast = bBox._northEast,
+        southWest = bBox._southWest,
+        evenZoom = Math.floor(this.zoom / zoomStep) * zoomStep;
+        const req = {
+          z: evenZoom,
+          x0: lngToXTile(southWest.lng, evenZoom),
+          x1: lngToXTile(northEast.lng, evenZoom),
+          y0: latToYTile(northEast.lat, evenZoom),
+          y1: latToYTile(southWest.lat, evenZoom),
+        };
+        this.stops = await getStopsData(req);
+    },
+    updateZoom(val) {
+      this.zoom = val;
     },
   },
+
 };
 </script>
