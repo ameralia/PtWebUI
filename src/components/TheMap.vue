@@ -49,19 +49,18 @@ export default {
       const northEast = bBox._northEast,
         southWest = bBox._southWest,
         evenZoom = Math.floor(this.zoom / zoomStep) * zoomStep;
-        const req = {
-          z: evenZoom,
-          x0: lngToXTile(southWest.lng, evenZoom),
-          x1: lngToXTile(northEast.lng, evenZoom),
-          y0: latToYTile(northEast.lat, evenZoom),
-          y1: latToYTile(southWest.lat, evenZoom),
-        };
-        this.stops = await getStopsData(req);
+      const req = {
+        z: evenZoom,
+        x0: lngToXTile(southWest.lng, evenZoom),
+        x1: lngToXTile(northEast.lng, evenZoom),
+        y0: latToYTile(northEast.lat, evenZoom),
+        y1: latToYTile(southWest.lat, evenZoom),
+      };
+      this.stops = await getStopsData(req);
     },
     updateZoom(val) {
       this.zoom = val;
     },
   },
-
 };
 </script>
