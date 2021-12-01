@@ -3,7 +3,6 @@
 <l-map
       :zoom="zoom"
       :center="defaultCenterPos"
-      :bounds="bounds"
       @update:bounds="updateBounds"
       @update:zoom="updateZoom"
     >
@@ -37,7 +36,6 @@ export default {
   data() {
     return {
         zoom: config("defaultZoom"),
-        bounds: {},
         stops: [],
         url: config("tilesUrlPattern"),
         defaultCenterPos: config("defaultCenterPos")
