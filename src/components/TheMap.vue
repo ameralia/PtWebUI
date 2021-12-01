@@ -1,10 +1,12 @@
 <template>
 <div style="height: 80vh; width: 80vw;">
 <l-map
+      ref="map"
       :zoom="zoom"
       :center="defaultCenterPos"
       @update:bounds="updateBounds"
       @update:zoom="updateZoom"
+      @ready="loadMap"
     >
       <l-tile-layer :url="url">
       </l-tile-layer>
@@ -59,6 +61,10 @@ export default {
     updateZoom(val) {
       this.zoom = val;
     },
+    async loadMap() {
+      const map = this.$refs.map.leafletObject;
+      await this.updateBounds(map.getBounds());
+    }
   },
 };
 </script>
