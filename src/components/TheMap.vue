@@ -8,10 +8,9 @@
       @update:zoom="updateZoom"
       @ready="loadMap"
     >
-      <l-tile-layer :url="url">
-      </l-tile-layer>
-      <l-control-layers />
+      <l-tile-layer :url="url" />
       <the-stops :stops="stops" />
+			<locate-me @click="locate"/>
     </l-map>
 </div>
 </template>
@@ -19,7 +18,6 @@
 import {
   LMap,
   LTileLayer,
-  LControlLayers,
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
 import TheStops from "./TheStops.vue";
@@ -27,12 +25,13 @@ import {lngToXTile} from "../GisMath";
 import {latToYTile} from "../GisMath";
 import {getStopsData} from "../provider";
 import config from "../config";
+import LocateMe from "./LocateMe.vue"
 
 export default {
   components: {
     LMap,
     LTileLayer,
-    LControlLayers,
+		LocateMe,
     TheStops,
   },
   data() {
@@ -64,7 +63,10 @@ export default {
     async loadMap() {
       const map = this.$refs.map.leafletObject;
       await this.updateBounds(map.getBounds());
-    }
+    },
+		locate() {
+			this.$refs.map.leafletObject.locate({setView: true, maxZoom: 17});
+		}
   },
 };
 </script>
