@@ -11,7 +11,8 @@
     >
       <l-tile-layer :url="url" />
       <the-stops :stops="stops" />
-			<locate-me @click="locate" :class="{location_search: isActive }"/>
+			<locate-me @click="locate" :class="{location_search: lookForLocation }"/>
+			<l-marker  :lat-lng="userCoords" v-if="userCoords"> </l-marker>
     </l-map>
 </div>
 </template>
@@ -19,6 +20,7 @@
 import {
   LMap,
   LTileLayer,
+	LMarker
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
 import TheStops from "./TheStops.vue";
@@ -32,6 +34,7 @@ export default {
   components: {
     LMap,
     LTileLayer,
+		LMarker,
 		LocateMe,
     TheStops,
   },
@@ -41,7 +44,8 @@ export default {
         stops: [],
         url: config("tilesUrlPattern"),
         defaultCenterPos: config("defaultCenterPos"),
-				isActive: false
+				lookForLocation: false,
+				userCoords: null
     };
   },
   methods: {
@@ -67,11 +71,12 @@ export default {
       await this.updateBounds(map.getBounds());
     },
 		locate() {
-			this.isActive = true;
+			this.lookForLocation = true;
 			this.$refs.map.leafletObject.locate({setView: true, maxZoom: 17});
 		},
-		locationFound() {
-			this.isActive = false;
+		locationFound(ev) {
+			this.lookForLocation = false;
+			this.userCoords = ev.latlng;
 		}
   },
 };
