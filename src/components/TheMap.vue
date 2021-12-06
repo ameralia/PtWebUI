@@ -7,10 +7,11 @@
       @update:bounds="updateBounds"
       @update:zoom="updateZoom"
       @ready="loadMap"
+			@locationfound="locationFound"
     >
       <l-tile-layer :url="url" />
       <the-stops :stops="stops" />
-			<locate-me @click="locate"/>
+			<locate-me @click="locate" :class="{location_search: isActive }"/>
     </l-map>
 </div>
 </template>
@@ -39,7 +40,8 @@ export default {
         zoom: config("defaultZoom"),
         stops: [],
         url: config("tilesUrlPattern"),
-        defaultCenterPos: config("defaultCenterPos")
+        defaultCenterPos: config("defaultCenterPos"),
+				isActive: false
     };
   },
   methods: {
@@ -65,8 +67,31 @@ export default {
       await this.updateBounds(map.getBounds());
     },
 		locate() {
+			this.isActive = true;
 			this.$refs.map.leafletObject.locate({setView: true, maxZoom: 17});
+		},
+		locationFound() {
+			this.isActive = false;
 		}
   },
 };
 </script>
+<style scoped>
+	.location_search {
+		animation-duration: 1s;
+		animation-name: pulse;
+		animation-iteration-count: infinite;
+	}
+@keyframes pulse {
+  from {
+		opacity: 0.1;
+
+  }
+  75% {
+		opacity: 0.8;
+  }
+  to {
+		opacity: 0.1;
+  }
+}
+</style>
